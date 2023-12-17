@@ -1,0 +1,23 @@
+name: WeaselDailies
+version: '${project.version}'
+main: wassel.weaseldailies.WeaselDailies
+api-version: '1.20'
+commands:
+  daily-reward:
+    description: Rewards the player when a day has passed since the last time
+    command: /<command>
+    aliases:
+      - dailyreward
+      - daily
+      - dr
+    permission: weaseldailies.dailyreward
+    permission-message: You do not have permission to run this command
+permissions:
+  weaseldailies.daily-reward:
+    description: Allows user to use the daily reward command
+    default: op
+  weaseldailies.*:
+    description: Allows user to use all controls of Weasel dailies
+    default: op
+    children:
+      weaseldailies.daily-reward: true

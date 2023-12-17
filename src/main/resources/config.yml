@@ -1,0 +1,15 @@
+prefix: "&6&lWeasel&2&lDailies &8&l>&r "
+permission-message: You do not have permission to run this command
+time-thresholds: #In hours
+  lower: 20
+  upper: 30
+streak:
+  1:
+    command: "give %player% diamond 1"
+    message: "Here is your first daily reward!"
+  2:
+    command: "give %player% diamond 2"
+    message: "You are pretty active!"
+  7:
+    command: "give %player% diamond 3"
+    message: "On a roll!"

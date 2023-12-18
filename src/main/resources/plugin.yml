@@ -9,8 +9,20 @@ commands:
     aliases:
       - dailyreward
       - daily
-      - dr
     permission: weaseldailies.dailyreward
+    permission-message: You do not have permission to run this command
+  force-daily-reward:
+    description: Forces daily reward to a player bypassing the time checks
+    command: /<command>
+    aliases:
+      - forcedailyreward
+      - forcedaily
+    permission: weaseldailies.forcedailyreward
+    permission-message: You do not have permission to run this command
+  reload:
+    description: Reloads the plugin
+    command: /<command>
+    permission: weaseldailies.reload
     permission-message: You do not have permission to run this command
 permissions:
   weaseldailies.daily-reward:
@@ -21,3 +33,5 @@ permissions:
     default: op
     children:
       weaseldailies.daily-reward: true
+      weaseldailies.forcedailyreward: true
+      weaseldailies.reload: true

@@ -2,6 +2,7 @@ package wassel.weaseldailies;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import wassel.weaseldailies.Commands.DailyRewardCommand;
+import wassel.weaseldailies.Commands.ReloadCommand;
 import wassel.weaseldailies.Configs.PlayerData;
 import wassel.weaseldailies.Controllers.IWeaselDailiesController;
 import wassel.weaseldailies.Controllers.WeaselDailiesController;
@@ -12,7 +13,6 @@ public final class WeaselDailies extends JavaPlugin {
     private IWeaselDailiesController weaselDailiesController;
     @Override
     public void onEnable() {
-
         //Default config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -31,9 +31,34 @@ public final class WeaselDailies extends JavaPlugin {
         //Main controller
         weaselDailiesController = new WeaselDailiesController(this);
 
-        //Daily reward command
+        //Commands
         try {
             getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
+            getCommand("reload").setExecutor(new ReloadCommand(this));
+        } catch (Exception e) {
+            MessageHelper.sendConsoleMessage("Command not found");
+            throw new RuntimeException(e);
+        }
+
+        MessageHelper.sendConsoleMessage("Setup completed");
+    }
+
+    public void reload(){
+        MessageHelper.sendConsoleMessage("Reload started");
+
+        reloadConfig();
+        PlayerData.reload();
+
+        //Message helper
+        MessageHelper.setup(getConfig());
+
+        //Main controller
+        weaselDailiesController = new WeaselDailiesController(this);
+
+        //Commands
+        try {
+            getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
+            getCommand("reload").setExecutor(new ReloadCommand(this));
         } catch (Exception e) {
             MessageHelper.sendConsoleMessage("Command not found");
             throw new RuntimeException(e);

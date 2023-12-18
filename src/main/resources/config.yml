@@ -1,5 +1,7 @@
 prefix: "&6&lWeasel&2&lDailies &8&l>&r "
-permission-message: You do not have permission to run this command
+messages:
+  too-early: You are too early to run this command
+  too-late: You were too late to maintain your streak
 time-thresholds: #In hours
   lower: 20
   upper: 30

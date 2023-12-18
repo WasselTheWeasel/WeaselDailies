@@ -13,18 +13,26 @@ import java.util.List;
 public class WeaselDailiesController implements IWeaselDailiesController{
     private final WeaselDailies plugin;
     private final FileConfiguration config;
+    private int lowerThreshold;
+    private int upperThreshold;
     public WeaselDailiesController(WeaselDailies plugin){
         this.plugin = plugin;
         this.config = this.plugin.getConfig();
+
+        String lowerThresholdString = config.getString("time-thresholds.lower");
+        if (lowerThresholdString == null || lowerThresholdString.isEmpty()) throw new RuntimeException("No lower threshold configured.");
+        else this.lowerThreshold = Integer.parseInt(lowerThresholdString);
+
+        String upperThresholdString = config.getString("time-thresholds.upper");
+        if (upperThresholdString == null || upperThresholdString.isEmpty()) throw new RuntimeException("No upper threshold configured.");
+        else this.upperThreshold = Integer.parseInt(upperThresholdString);
     }
 
     public void HandleCommand(Player player){
         boolean giveReward = true;
         LocalDateTime timeNow = LocalDateTime.now();
-        int streak = 1;
+        int streak = 0;
 
-        int lowerThreshold;
-        int upperThreshold;
 
         //Get the Player Data of the one issuing the command
         ConfigurationSection playerConfigurationSection = PlayerData.get().getConfigurationSection(player.getUniqueId().toString());
@@ -38,21 +46,35 @@ public class WeaselDailiesController implements IWeaselDailiesController{
                 if (streakString != null && !streakString.isEmpty()){
                     streak = Integer.parseInt(streakString);
                 }
-                else //Fill in missing streak
-                    PlayerData.get().set((player.getUniqueId() + ".streak"), streak);
 
+                //Check times
+                if (timeNow.isAfter(savedTime.plusHours(lowerThreshold))) {
+                    if (timeNow.isBefore(savedTime.plusHours(upperThreshold)))
+                        streak++;
+                    else{
+                        streak = 1;
+                        MessageHelper.sendMessageToPlayer(player, config.getString("messages.too-late"));
+                    }
+                }
+                else {
+                    giveReward = false;
+                    MessageHelper.sendMessageToPlayer(player, config.getString("messages.too-early"));
+                }
             }
-            else NewPlayerDataSection(player, timeNow.toString(), streak);
+            else streak = 1;
         }
-        else NewPlayerDataSection(player, timeNow.toString(), streak);
+        else streak = 1;
 
-        if (giveReward)
+        if (giveReward){
+            SavePlayerDataSection(player, timeNow.toString(), streak);
             GiveReward(player, streak);
+        }
     }
-    private void NewPlayerDataSection(Player player, String time, int streak){
+    private void SavePlayerDataSection(Player player, String time, int streak){
         //Fill in missing time and streak
         PlayerData.get().set((player.getUniqueId() + ".time"), time);
         PlayerData.get().set((player.getUniqueId() + ".streak"), streak);
+        PlayerData.save();
     }
 
     private void GiveReward(Player player, int incomingStreak){
@@ -60,8 +82,8 @@ public class WeaselDailiesController implements IWeaselDailiesController{
 
         int decidedStreak = 0;
 
-        List<Integer> configuredStreaks = config.getIntegerList("streak");
-        for (Integer possibleStreak : configuredStreaks){
+        for (String configuredStreakString : config.getConfigurationSection("streak").getKeys(false)){
+            int possibleStreak = Integer.parseInt(configuredStreakString);
             if (incomingStreak >= possibleStreak) decidedStreak = possibleStreak;
         }
 
@@ -72,7 +94,7 @@ public class WeaselDailiesController implements IWeaselDailiesController{
         }
 
         String command = config.getString("streak." + decidedStreak + ".command");
-        command.replace("%player%", playerIgn);
+        command = command.replace("%player%", playerIgn);
         String message = config.getString("streak." + decidedStreak + ".message");
         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
         MessageHelper.sendMessageToPlayer(player, message);

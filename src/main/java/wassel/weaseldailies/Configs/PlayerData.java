@@ -14,7 +14,7 @@ public class PlayerData {
 
     //Finds or generates PlayerData config file
     public static void setup(){
-        file = new File(Bukkit.getServer().getPluginManager().getPlugin("WeaselDailies").getDataFolder(), "PlayerData");
+        file = new File(Bukkit.getServer().getPluginManager().getPlugin("WeaselDailies").getDataFolder(), "PlayerData.yml");
         if (!file.exists()){
             try {
                 file.createNewFile();

@@ -31,10 +31,10 @@ public class ForceDailyRewardCommand implements CommandExecutor {
         } else {
             String targetName = strings[0];
             target = Bukkit.getServer().getPlayerExact(targetName);
-            if (target == null){
-                MessageHelper.sendMessageToPlayer(caster, "Player not found");
-                return true;
-            }
+        }
+        if (target == null){
+            MessageHelper.sendMessageToPlayer(caster, "Player not found");
+            return true;
         }
 
         weaselDailiesController.ForceDailyReward(target);

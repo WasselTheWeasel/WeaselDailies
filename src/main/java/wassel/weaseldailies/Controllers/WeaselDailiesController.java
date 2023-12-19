@@ -8,16 +8,15 @@ import wassel.weaseldailies.Helpers.MessageHelper;
 import wassel.weaseldailies.WeaselDailies;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class WeaselDailiesController implements IWeaselDailiesController{
     private final WeaselDailies plugin;
     private final FileConfiguration config;
-    private int lowerThreshold;
-    private int upperThreshold;
+    private final int lowerThreshold;
+    private final int upperThreshold;
     public WeaselDailiesController(WeaselDailies plugin){
         this.plugin = plugin;
-        this.config = this.plugin.getConfig();
+        this.config = plugin.getConfig();
 
         String lowerThresholdString = config.getString("time-thresholds.lower");
         if (lowerThresholdString == null || lowerThresholdString.isEmpty()) throw new RuntimeException("No lower threshold configured.");
@@ -80,6 +79,7 @@ public class WeaselDailiesController implements IWeaselDailiesController{
             String streakString = playerConfigurationSection.getString(".streak");
             if (streakString != null && !streakString.isEmpty()){
                 streak = Integer.parseInt(streakString);
+                streak++;
             }
             else streak = 1;
         }

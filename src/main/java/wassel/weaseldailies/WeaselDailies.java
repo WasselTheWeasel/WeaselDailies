@@ -17,6 +17,7 @@ public final class WeaselDailies extends JavaPlugin {
         //Default config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+        reloadConfig();
 
         //Message helper
         MessageHelper.setup(getConfig());
@@ -28,25 +29,29 @@ public final class WeaselDailies extends JavaPlugin {
         PlayerData.get().addDefault("UUID.streak", 0);
         PlayerData.get().options().copyDefaults(true);
         PlayerData.save();
+        PlayerData.reload();
 
         //Main controller
         weaselDailiesController = new WeaselDailiesController(this);
 
         //Commands
-        try {
-            getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
-            getCommand("reload").setExecutor(new ReloadCommand(this));
-        } catch (Exception e) {
-            MessageHelper.sendConsoleMessage("Command not found");
-            throw new RuntimeException(e);
-        }
+        getCommands();
 
         MessageHelper.sendConsoleMessage("Setup completed");
     }
 
-    public void reload(){
-        MessageHelper.sendConsoleMessage("Reload started");
+    private void getCommands(){
+        try {
+            getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
+            getCommand("force-daily-reward").setExecutor(new ForceDailyRewardCommand(weaselDailiesController));
+            getCommand("reload").setExecutor(new ReloadCommand(this));
+        } catch (Exception e) {
+            MessageHelper.sendConsoleMessage("Commands not found");
+            throw new RuntimeException(e);
+        }
+    }
 
+    public void reload(){
         reloadConfig();
         PlayerData.reload();
 
@@ -57,16 +62,7 @@ public final class WeaselDailies extends JavaPlugin {
         weaselDailiesController = new WeaselDailiesController(this);
 
         //Commands
-        try {
-            getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
-            getCommand("force-daily-reward").setExecutor(new ForceDailyRewardCommand(weaselDailiesController));
-            getCommand("reload").setExecutor(new ReloadCommand(this));
-        } catch (Exception e) {
-            MessageHelper.sendConsoleMessage("Commands not found");
-            throw new RuntimeException(e);
-        }
-
-        MessageHelper.sendConsoleMessage("Setup completed");
+        getCommands();
     }
 
     @Override

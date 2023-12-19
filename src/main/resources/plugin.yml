@@ -28,6 +28,12 @@ permissions:
   weaseldailies.daily-reward:
     description: Allows user to use the daily reward command
     default: op
+  weaseldailies.force-daily-reward:
+    description: Allows user to use the force daily reward command
+    default: op
+  weaseldailies.reload:
+    description: Allows user to use the reload command
+    default: op
   weaseldailies.*:
     description: Allows user to use all controls of Weasel dailies
     default: op

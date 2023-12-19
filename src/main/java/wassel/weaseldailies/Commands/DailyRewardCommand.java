@@ -10,9 +10,7 @@ import wassel.weaseldailies.Helpers.MessageHelper;
 import javax.annotation.Nonnull;
 
 public class DailyRewardCommand implements CommandExecutor {
-
     private final IWeaselDailiesController weaselDailiesController;
-
     public DailyRewardCommand(IWeaselDailiesController weaselDailiesController){
         this.weaselDailiesController = weaselDailiesController;
     }
@@ -26,7 +24,7 @@ public class DailyRewardCommand implements CommandExecutor {
         }
         Player player = (Player) commandSender;
 
-        weaselDailiesController.HandleCommand(player);
+        weaselDailiesController.DailyReward(player);
 
         return true;
     }

@@ -28,11 +28,10 @@ public class WeaselDailiesController implements IWeaselDailiesController{
         else this.upperThreshold = Integer.parseInt(upperThresholdString);
     }
 
-    public void HandleCommand(Player player){
+    public void DailyReward(Player player){
         boolean giveReward = true;
         LocalDateTime timeNow = LocalDateTime.now();
         int streak = 0;
-
 
         //Get the Player Data of the one issuing the command
         ConfigurationSection playerConfigurationSection = PlayerData.get().getConfigurationSection(player.getUniqueId().toString());
@@ -70,6 +69,26 @@ public class WeaselDailiesController implements IWeaselDailiesController{
             GiveReward(player, streak);
         }
     }
+
+    @Override
+    public void ForceDailyReward(Player player) {
+        LocalDateTime timeNow = LocalDateTime.now();
+        int streak = 0;
+
+        ConfigurationSection playerConfigurationSection = PlayerData.get().getConfigurationSection(player.getUniqueId().toString());
+        if(playerConfigurationSection != null) {
+            String streakString = playerConfigurationSection.getString(".streak");
+            if (streakString != null && !streakString.isEmpty()){
+                streak = Integer.parseInt(streakString);
+            }
+            else streak = 1;
+        }
+        else streak = 1;
+
+        SavePlayerDataSection(player, timeNow.toString(), streak);
+        GiveReward(player, streak);
+    }
+
     private void SavePlayerDataSection(Player player, String time, int streak){
         //Fill in missing time and streak
         PlayerData.get().set((player.getUniqueId() + ".time"), time);
@@ -81,7 +100,6 @@ public class WeaselDailiesController implements IWeaselDailiesController{
         String playerIgn = player.getName();
 
         int decidedStreak = 0;
-
         for (String configuredStreakString : config.getConfigurationSection("streak").getKeys(false)){
             int possibleStreak = Integer.parseInt(configuredStreakString);
             if (incomingStreak >= possibleStreak) decidedStreak = possibleStreak;

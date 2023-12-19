@@ -2,6 +2,7 @@ package wassel.weaseldailies;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import wassel.weaseldailies.Commands.DailyRewardCommand;
+import wassel.weaseldailies.Commands.ForceDailyRewardCommand;
 import wassel.weaseldailies.Commands.ReloadCommand;
 import wassel.weaseldailies.Configs.PlayerData;
 import wassel.weaseldailies.Controllers.IWeaselDailiesController;
@@ -58,9 +59,10 @@ public final class WeaselDailies extends JavaPlugin {
         //Commands
         try {
             getCommand("daily-reward").setExecutor(new DailyRewardCommand(weaselDailiesController));
+            getCommand("force-daily-reward").setExecutor(new ForceDailyRewardCommand(weaselDailiesController));
             getCommand("reload").setExecutor(new ReloadCommand(this));
         } catch (Exception e) {
-            MessageHelper.sendConsoleMessage("Command not found");
+            MessageHelper.sendConsoleMessage("Commands not found");
             throw new RuntimeException(e);
         }
 
